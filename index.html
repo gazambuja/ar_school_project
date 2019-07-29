@@ -1,0 +1,130 @@
+<script src="app.js"></script>
+<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+<script type="text/javascript">
+	var orderMap = new Map();
+	var orderStatus = 0;
+	var correctOrder = []
+	var correctOrderAlt = []
+
+	setInterval(function(){
+		markers = document.querySelectorAll("a-marker")
+		markers.forEach(function(marker){
+			if(marker.object3D.visible && marker.id == "reset")
+			{
+				document.querySelector("#resetText").setAttribute("visible", true)
+				setTimeout(function(){
+					document.querySelector("#resetText").setAttribute("visible", false)
+				}, 2000)
+				orderStatus = 1
+				allGreen(0)
+				reboot()
+			}
+			else if (marker.object3D.visible)
+				orderMap.set(marker.id, marker.object3D.position.x)
+			else
+				orderMap.delete(marker.id)
+		})
+
+		checkOrder(new Map([...orderMap.entries()].sort((a, b) => a[1] - b[1])))
+	}, 1000)
+
+	function checkOrder(map)
+	{
+		var sort = Array.from(map.keys())
+		
+		if( sort.length > 1 && arraysEqual(sort, correctOrder) || arraysEqual(sort, correctOrderAlt) ){
+			console.log("YEA!!!", correctOrder)
+			allGreen(1)
+		}
+		else
+		{
+			allGreen(0)
+		}
+	}
+
+	function allGreen(success)
+	{
+		if(success === 1 && orderStatus === 0){
+			orderStatus = 1
+			document.querySelector("#m1>a-entity>a-box").emit("success")
+			document.querySelector("#m2>a-entity>a-box").emit("success")
+			document.querySelector("#m3>a-entity>a-box").emit("success")
+			document.querySelector("#m4>a-entity>a-box").emit("success")
+			document.querySelector("#m5>a-entity>a-box").emit("success")
+		}
+		else if (success === 0 && orderStatus === 1){
+			orderStatus = 0
+			document.querySelector("#m1>a-entity>a-box").emit("fail")
+			document.querySelector("#m2>a-entity>a-box").emit("fail")
+			document.querySelector("#m3>a-entity>a-box").emit("fail")
+			document.querySelector("#m4>a-entity>a-box").emit("fail")
+			document.querySelector("#m5>a-entity>a-box").emit("fail")
+		}
+	}
+
+	window.onload = function() {
+	  reset();
+	};
+</script>
+<body style='margin : 0px; overflow: hidden;'>
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+
+	<a-marker registerevents id="m1" type='barcode' value='10' smooth='false'>
+		<a-entity scale="0.5 0.5 0.5">
+			<a-box position="0 0 0" rotation="-90 0 0" height="2" width="2" depth="0.2" color="red">
+				<a-animation begin="success" attribute="material.color" from="red" to="green" dur="500" repeat="0"></a-animation>
+				<a-animation begin="fail" attribute="material.color" from="green" to="red" dur="100" repeat="0"></a-animation>
+				<a-text align="center" value="5" color="black" width="25" z-offset="0.21"></a-text>
+			</a-box>
+		</a-entity>
+	</a-marker>
+
+	<a-marker registerevents id="m2" type='barcode' value='11' smooth='false'>
+		<a-entity scale="0.5 0.5 0.5">
+			<a-box position="0 0 0" rotation="-90 0 0" height="2" width="2" depth="0.2" color="red">
+				<a-animation begin="success" attribute="material.color" from="red" to="green" dur="500" repeat="0"></a-animation>
+				<a-animation begin="fail" attribute="material.color" from="green" to="red" dur="100" repeat="0"></a-animation>
+				<a-text align="center" value="+" color="black" width="25" z-offset="0.21"></a-text>
+			</a-box>
+		</a-entity>
+	</a-marker>
+
+	<a-marker registerevents id="m3" type='barcode' value='12' smooth='false'>
+		<a-entity scale="0.5 0.5 0.5">
+			<a-box position="0 0 0" rotation="-90 0 0" height="2" width="2" depth="0.2" color="red">
+				<a-animation begin="success" attribute="material.color" from="red" to="green" dur="500" repeat="0"></a-animation>
+				<a-animation begin="fail" attribute="material.color" from="green" to="red" dur="100" repeat="0"></a-animation>
+				<a-text align="center" value="3" color="black" width="25" z-offset="0.21"></a-text>
+			</a-box>
+		</a-entity>
+	</a-marker>
+
+	<a-marker registerevents id="m4" type='barcode' value='13' smooth='false'>
+		<a-entity scale="0.5 0.5 0.5">
+			<a-box position="0 0 0" rotation="-90 0 0" height="2" width="2" depth="0.2" color="red">
+				<a-animation begin="success" attribute="material.color" from="red" to="green" dur="500" repeat="0"></a-animation>
+				<a-animation begin="fail" attribute="material.color" from="green" to="red" dur="100" repeat="0"></a-animation>
+				<a-text align="center" value="=" color="black" width="25" z-offset="0.21"></a-text>
+			</a-box>
+		</a-entity>
+	</a-marker>
+
+
+	<a-marker registerevents id="m5" type='barcode' value='14' smooth='false'>
+		<a-entity scale="0.5 0.5 0.5">
+			<a-box position="0 0 0" rotation="-90 0 0" height="2" width="2" depth="0.2" color="red">
+				<a-animation begin="success" attribute="material.color" from="red" to="green" dur="500" repeat="0"></a-animation>
+				<a-animation begin="fail" attribute="material.color" from="green" to="red" dur="100" repeat="0"></a-animation>
+				<a-text align="center" value="8" color="black" width="25" z-offset="0.21"></a-text>
+			</a-box>
+		</a-entity>
+	</a-marker>
+
+	<a-text id="resetText" scale="0.5 0.5 0.5" position="0 0 -1" align="center"  value="LISTO" visible="false"></a-text>
+
+	<a-marker registerevents id="reset" type='barcode' value='0' smooth='false'></a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
