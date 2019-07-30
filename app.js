@@ -30,3 +30,23 @@ function reboot()
 	document.querySelector("#" + correctOrder[3] + ">a-entity>a-box>a-text").setAttribute("value","=")
 	document.querySelector("#" + correctOrder[4] + ">a-entity>a-box>a-text").setAttribute("value",(val1+val2))
 }
+
+function allGreen()
+{
+		document.querySelector("#m1>a-entity>a-box").emit("success")
+		document.querySelector("#m2>a-entity>a-box").emit("success")
+		document.querySelector("#m3>a-entity>a-box").emit("success")
+		document.querySelector("#m4>a-entity>a-box").emit("success")
+		document.querySelector("#m5>a-entity>a-box").emit("success")
+		document.querySelector("#animationEntity").setAttribute("visible", true)
+}
+
+function allRed()
+{
+		document.querySelector("#animationEntity").setAttribute("visible", false)
+		document.querySelector("#m1>a-entity>a-box").emit("fail")
+		document.querySelector("#m2>a-entity>a-box").emit("fail")
+		document.querySelector("#m3>a-entity>a-box").emit("fail")
+		document.querySelector("#m4>a-entity>a-box").emit("fail")
+		document.querySelector("#m5>a-entity>a-box").emit("fail")		
+}
